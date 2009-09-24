@@ -66,19 +66,27 @@ start_drv() ->
 	Port=get(driver.port),
 	maybe_start_drv(Port).
 
+
+
 maybe_start_drv(undefined) ->
     process_flag(trap_exit, true),
 	DriverPath=find_drv(),
 	try_start_drv(DriverPath);
 
 maybe_start_drv(_Port) ->
+	put(driver.state, already_started),
 	already_started. % hopefully ;-)
+
+
+
 
 try_start_drv({ok,Path}) ->
     Port = open_port({spawn, Path}, [{packet, 2}, binary, exit_status]),
+	put(driver.state, started),
 	put(driver.port, Port);
 
 try_start_drv(_) ->
+	put(driver.state, error),
 	error.
 
 

@@ -162,3 +162,20 @@ estimate_file(_, _) ->
 
 
 
+%% @doc Adds 1 to the current value of Var
+%%
+addvar(Var) when is_atom(Var) -> addvar(Var, 1);
+addvar(_) -> error.
+
+
+%% @doc Adds Count to the current value of Var
+%%
+addvar(Var, Count) when is_atom(Var) and is_integer(Count) ->
+	addvar(Var, get(Var), Count);
+
+addvar(_,_) ->
+	error.
+
+
+addvar(Var, undefined, Count) -> put(Var, Count);
+addvar(Var, Value, Count)     -> put(Var, Value+Count).
