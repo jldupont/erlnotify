@@ -11,6 +11,7 @@
 
 -define(SERVER,        drv_server).
 -define(TOOLS,         erlnotify_tools).
+-define(TIMEOUT,       30*1000).
 
 
 %% ----------------------      ------------------------------
@@ -37,8 +38,8 @@ server() ->
 			start_drv();
 
 		{_Port, {exit_status, _}} ->
-			%% TODO maybe throttle?
-			start_drv();
+			schedule_restart();
+
 		
 		{_Port, {data, Data}} ->
 			handle_rx_drv(Data);
@@ -62,6 +63,10 @@ handle_rx_drv(Data) ->
 %%%%%%%%%%%%%%%%%%%%%%%%% LOCALS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% ----------------------         ------------------------------
 
+schedule_restart() ->
+	timer:send_after(?TIMEOUT, start).
+
+
 start_drv() ->
 	Port=get(driver.port),
 	maybe_start_drv(Port).
@@ -81,6 +86,7 @@ maybe_start_drv(_Port) ->
 
 
 try_start_drv({ok,Path}) ->
+	?TOOLS:addvar(driver.start), % stats
     Port = open_port({spawn, Path}, [{packet, 2}, binary, exit_status]),
 	put(driver.state, started),
 	put(driver.port, Port);
