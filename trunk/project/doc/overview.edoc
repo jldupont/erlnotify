@@ -1,0 +1,33 @@
+** this is the overview.edoc file for the application 'erlnotify'
+
+@author Jean-Lou Dupont
+@title  erlnotify $version - documentation 
+
+@doc    
+
+<b>erlnotify</b> consists of an Erlang daemon offering an API to access OSD Notify / libnotify.
+
+== Dependencies ==
+<ul>
+ <li>epapi (Erlang Port API)</li>
+</ul>
+
+
+== Daemon management ==
+
+The daemon can be managed using the command-line:
+
+	```
+		erlnotify start
+		erlnotify stop
+	'''
+
+== API ==
+The API consists of the following functions:
+
+<ul>
+ <li></li>
+</ul>
+
+  ===0.1===
+  Initial release
