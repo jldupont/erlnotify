@@ -47,3 +47,28 @@ extract_host(Node) when is_atom(Node) ->
 extract_host(Node) when is_list(Node) ->
 	Tokens = string:tokens(Node, "@"),
 	lists:last(Tokens).
+
+
+
+%% @doc Very permissive pattern based filter
+%%
+pattern_filter(Pattern, List) ->
+	pattern_filter(Pattern, List, []).
+
+pattern_filter(_Pattern, [], Acc) ->
+	Acc;
+
+pattern_filter(Pattern, [H|T], Acc) when is_list(Pattern) ->
+	
+	case string:str(H, Pattern) of
+		0 -> pattern_filter(Pattern, T, Acc);
+		_ -> pattern_filter(Pattern, T, Acc++[H])
+	end;
+	
+pattern_filter(_, _, Acc) ->
+	Acc.
+	
+	
+	
+	
+	
