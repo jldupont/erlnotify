@@ -1,0 +1,9 @@
+Package: erlnotify
+Version: $version
+Priority: optional
+Architecture: all
+Depends: epapi (>=0.2)
+Section: Other
+Maintainer: Jean-Lou Dupont <erlang@jldupont.com>
+Description: Erlang API for OSD Notify
+ .
