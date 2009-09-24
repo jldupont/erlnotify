@@ -20,7 +20,8 @@
 %% ----------------------      ------------------------------
 
 api({notif, Timeout, Title, Msg}) ->
-	ok;
+	rpc({notif, Timeout, Title, Msg});
+	
 
 api(Other) ->
 	{error, {invalid_method_call, Other}}.
@@ -36,9 +37,9 @@ api(Other) ->
 %% ----------------------               ------------------------------
 
 rpc(Message) ->
-	From=node(),
-	Fnode=?TOOLS:make_node(From),
+	Fnode=?TOOLS:make_node(node()),
 	dorpc(Fnode, Message).
+
 
 %% The Client must be running in a register node() context
 %% or else the RPC does not work.
@@ -49,13 +50,14 @@ dorpc(nohost, _) ->
 
 %% @private
 dorpc(Fnode, Message) ->
+	FromNode=node(),
 	RemoteNode=?TOOLS:make_node(?SERVER),
 	
-	%io:format("dorpc: Fnode[~p] Message[~p]~n", [Fnode, Message]),
+	io:format("dorpc: Fnode[~p] Message[~p]~n", [Fnode, Message]),
 	
 	%% If the daemon is down, this call will fail first and thus
 	%% {error, node_down} will be received by the caller
-	case rpc:call(RemoteNode, mswitch, call, [Message], ?TIMEOUT) of
+	case rpc:call(RemoteNode, erlnotify_server, call, [FromNode, Message], ?TIMEOUT) of
 		{badrpc, Reason} ->
 			io:format("~p: dorpc: badrpc: ~p~n", [?MODULE, Reason]),
 			{error, node_down};
